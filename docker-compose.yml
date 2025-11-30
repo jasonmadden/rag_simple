@@ -1,0 +1,26 @@
+services:
+  db:
+    build:
+      dockerfile: .docker/pgvector/Dockerfile
+    container_name: pgvector-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vectordb
+    ports:
+      - "5432:5432"
+    volumes:
+      - .db_data:/var/lib/postgresql/data  # Persistent named volume
+  app:
+    build:
+      context: ./app
+      dockerfile: .docker/app/Dockerfile
+    container_name: vector-app
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: [ "/bin/bash", "-lc", "source /app/.venv/bin/activate && exec bash" ]
