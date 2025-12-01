@@ -52,6 +52,55 @@ LLM:
 
 Use a `.env` file at the project root to set these; both scripts call `dotenv.load_dotenv()`.
 
+## Ollama: install and run `llama3`
+
+This project expects a local or reachable Ollama server exposing `llama3` at `http://localhost:11434` by default.
+
+1) Install Ollama
+
+- macOS (Homebrew):
+  ```bash
+  brew install ollama
+  ```
+- Linux (official script):
+  ```bash
+  curl -fsSL https://ollama.com/install.sh | sh
+  ```
+- Windows:
+  - Install the Ollama for Windows MSI from: https://ollama.com/download
+  - Alternatively under WSL2, install using the Linux script above and access via `localhost`.
+
+2) Start Ollama service
+
+- On macOS/Windows, the desktop app or service generally starts automatically.
+- On Linux (systemd):
+  ```bash
+  sudo systemctl enable --now ollama
+  # check status
+  systemctl status ollama
+  ```
+
+3) Pull and test the `llama3` model
+
+```bash
+# Download and run once (pulls the model on first use)
+ollama run llama3 "Say hello"
+
+# or explicitly pull first, then run:
+ollama pull llama3
+ollama run llama3
+```
+
+4) Verify the API is reachable (optional)
+
+```bash
+curl http://localhost:11434/api/tags
+```
+
+Notes:
+- If Ollama runs on another machine, set `OLLAMA_HOST` (e.g., `export OLLAMA_HOST=http://remote-host:11434`) before running `app/query.py`.
+- `app/query.py` hardcodes `model="llama3"`; adjust in code if you want a different local model.
+
 ## Setup and Run
 
 ### Option A: Docker Compose
